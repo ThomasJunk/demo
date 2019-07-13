@@ -1,6 +1,7 @@
 package server
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/go-chi/chi/middleware"
@@ -18,4 +19,16 @@ func (s *Server) AddMiddleware() {
 	// through ctx.Done() that the request has timed out and further
 	// processing should be stopped.
 	s.Router.Use(middleware.Timeout(60 * time.Second))
+}
+
+//Authenticated routes
+func (s *Server) Authenticated(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		msg := s.Session.GetString(r.Context(), "userid")
+		if msg == "" {
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+		next(w, r)
+	}
 }
