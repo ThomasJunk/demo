@@ -1,39 +1,46 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/ThomasJunk/demo/pkg/configuration"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
 )
 
 //Server structure
 type Server struct {
-	Router  *chi.Mux
-	Session *scs.SessionManager
+	Router        *chi.Mux
+	Session       *scs.SessionManager
+	Configuration *configuration.Configuration
+	Log           *zap.Logger
 }
 
-//New instantiates new server
-func New(session *scs.SessionManager) {
-	s := prepareServer(session)
+//Run instantiates new server and runs it
+func Run(c *configuration.Configuration) {
+	s := prepareServer(c)
 	srv := &http.Server{
-		Handler: s.Session.LoadAndSave(s.Router),
-		Addr:    "127.0.0.1:8000",
-		// Good practice: enforce timeouts for servers you create!
+		Handler:      s.Session.LoadAndSave(s.Router),
+		Addr:         c.Listen(),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+	c.Logger.Info(fmt.Sprintf("Starting server on %s", c.Listen()))
 	log.Fatal(srv.ListenAndServe())
 }
 
-func prepareServer(session *scs.SessionManager) *Server {
+func prepareServer(c *configuration.Configuration) *Server {
 	r := chi.NewRouter()
-	sessionManager := session
+	sessionManager := c.Session
 	s := &Server{
-		Router:  r,
-		Session: sessionManager,
+		Router:        r,
+		Session:       sessionManager,
+		Configuration: c,
+		Log:           c.Logger,
 	}
 	s.AddMiddleware()
 	s.AddRoutes()

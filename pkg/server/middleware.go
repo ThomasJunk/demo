@@ -4,15 +4,15 @@ import (
 	"net/http"
 	"time"
 
+	chilogger "github.com/766b/chi-logger"
 	"github.com/go-chi/chi/middleware"
 )
 
 //AddMiddleware to server
 func (s *Server) AddMiddleware() {
-	// A good base middleware stack
 	s.Router.Use(middleware.RequestID)
 	s.Router.Use(middleware.RealIP)
-	s.Router.Use(middleware.Logger)
+	s.Router.Use(chilogger.NewZapMiddleware("router", s.Log))
 	s.Router.Use(middleware.Recoverer)
 
 	// Set a timeout value on the request context (ctx), that will signal
