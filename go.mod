@@ -6,6 +6,8 @@ require (
 	github.com/766b/chi-logger v0.0.0-20180309043024-d2679d398ce4
 	github.com/alexedwards/scs/boltstore v0.0.0-20190621121006-83d682aeae9b
 	github.com/alexedwards/scs/v2 v2.1.0
+	github.com/casbin/casbin v1.9.1
+	github.com/casbin/chi-authz v0.0.0-20170726155602-f9f57e3793f2
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/gorilla/mux v1.7.3
 	github.com/joho/godotenv v1.3.0

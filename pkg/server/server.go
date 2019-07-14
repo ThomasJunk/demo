@@ -8,6 +8,7 @@ import (
 
 	"github.com/ThomasJunk/demo/pkg/configuration"
 	"github.com/alexedwards/scs/v2"
+	"github.com/casbin/casbin"
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 )
@@ -18,6 +19,7 @@ type Server struct {
 	Session       *scs.SessionManager
 	Configuration *configuration.Configuration
 	Log           *zap.Logger
+	Enforcer      *casbin.Enforcer
 }
 
 //Run instantiates new server and runs it

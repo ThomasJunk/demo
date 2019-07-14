@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/casbin/casbin"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
@@ -20,10 +21,11 @@ type Configuration struct {
 	Environment *Environment
 	Session     *scs.SessionManager
 	Logger      *zap.Logger
+	Enforcer    *casbin.Enforcer
 }
 
 //New configuration construction
-func New(session *scs.SessionManager, l *zap.Logger) *Configuration {
+func New(session *scs.SessionManager, l *zap.Logger, e *casbin.Enforcer) *Configuration {
 	err := godotenv.Load()
 	port := "8000"
 	address := "127.0.0.1"
@@ -39,6 +41,7 @@ func New(session *scs.SessionManager, l *zap.Logger) *Configuration {
 		Environment: environment,
 		Session:     session,
 		Logger:      l,
+		Enforcer:    e,
 	}
 }
 
